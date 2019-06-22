@@ -1,0 +1,13 @@
+{
+    "name": "administrator/caching-with-printful-api",
+    "description": "Getting data from Prinitfy API and caching it for 5 minutes",
+    "authors": [
+        {
+            "name": "Nikita",
+            "email": "nx.smtech@gmail.com"
+        }
+    ],
+    "require": {
+        "guzzlehttp/guzzle": "~6.0"
+    }
+}
