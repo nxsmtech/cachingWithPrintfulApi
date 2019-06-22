@@ -13,6 +13,24 @@ class Shipping
     private $variant_id;
     private $quantity;
 
+    public function __construct(
+        string $address1,
+        string $city,
+        string $county_code,
+        string $state_code,
+        int $zip,
+        int $variant_id,
+        int $quantity)
+    {
+        $this->address1 = $address1;
+        $this->city = $city;
+        $this->county_code = $county_code;
+        $this->state_code = $state_code;
+        $this->zip = $zip;
+        $this->variant_id = $variant_id;
+        $this->quantity = $quantity;
+    }
+
     public function setAddress1($address1)
     {
         $this->address1 = $address1;
