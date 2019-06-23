@@ -3,11 +3,13 @@
 namespace Model;
 
 use GuzzleApi;
+use Cache;
 
 class Shipping
 {
     //guzzle
     private $guzzleClient;
+    private $cache;
     //recepient variables
     private $address1;
     private $countryCode;
@@ -20,14 +22,23 @@ class Shipping
     // items variables
     private $items;
 
-    public function __construct(GuzzleApi $guzzleClient, $address, $items)
+    public function __construct(GuzzleApi $guzzleClient, $address, $items, Cache $cache)
     {
         $this->guzzleClient = $guzzleClient;
+        $this->cache = $cache;
         $this->address1 = ($address['address1'] != null ? $address['address1'] : null);
         $this->city = ($address['city'] != null ? $address['city'] : null);
         $this->county = ($address['county'] != null ? $address['county'] : null);
         $this->zip = ($address['zip'] != null ? $address['zip'] : null);
         $this->items = $items;
+    }
+
+    public function cacheResult($data)
+    {
+        $cache_expires = 60;
+        foreach ($data as $result) {
+            $this->cache->set($result->id, $result, $cache_expires);
+        }
     }
 
     public function getShippingRates() {

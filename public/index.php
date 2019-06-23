@@ -2,6 +2,7 @@
 require '../vendor/autoload.php';
 include '../src/Model/Shipping.php';
 include '../src/GuzzleApi.php';
+include '../src/Cache.php';
 
 $address = array(
     'address1' => '11025 Westlake Dr',
@@ -16,11 +17,10 @@ $items = array(
     ],
 );
 
+$cache = new Cache();
 $guzzleApi = new GuzzleApi();
-$shipping = new \Model\Shipping($guzzleApi, $address, $items);
-$rates = $shipping->getShippingRates();
-
-
-
+$shipping = new \Model\Shipping($guzzleApi, $address, $items, $cache);
+$shippingRates = $shipping->getShippingRates();
+$shipping->cacheResult($shippingRates);
 
 echo "name";
