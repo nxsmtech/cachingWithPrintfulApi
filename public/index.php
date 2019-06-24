@@ -16,11 +16,9 @@ $items = array(
         'variant_id' => 7679
     ],
 );
-
-$cache = new Cache();
+$config = include '../config/config.php';
+$cache = new Cache($config);
 $guzzleApi = new GuzzleApi();
-$shipping = new \Model\Shipping($guzzleApi, $address, $items, $cache);
+$shipping = new \Model\Shipping($guzzleApi, $address, $items, $cache, $config);
 $shippingRates = $shipping->getShippingRates();
 $shipping->cacheResult($shippingRates);
-
-echo "name";

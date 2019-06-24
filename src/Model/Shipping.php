@@ -10,6 +10,7 @@ class Shipping
     //guzzle
     private $guzzleClient;
     private $cache;
+    private $config;
     //recepient variables
     private $address1;
     private $countryCode;
@@ -22,10 +23,11 @@ class Shipping
     // items variables
     private $items;
 
-    public function __construct(GuzzleApi $guzzleClient, $address, $items, Cache $cache)
+    public function __construct(GuzzleApi $guzzleClient, $address, $items, Cache $cache, $config)
     {
         $this->guzzleClient = $guzzleClient;
         $this->cache = $cache;
+        $this->config = $config;
         $this->address1 = ($address['address1'] != null ? $address['address1'] : null);
         $this->city = ($address['city'] != null ? $address['city'] : null);
         $this->county = ($address['county'] != null ? $address['county'] : null);
@@ -35,16 +37,18 @@ class Shipping
 
     public function cacheResult($data)
     {
-        $cache_expires = 60;
+        $cache_expires = $this->config->cache_duration;
         foreach ($data as $result) {
             $this->cache->set($result->id, $result, $cache_expires);
         }
     }
 
     public function getShippingRates() {
+        $method = $this->config->shipping_rate['method'];
+        $url = $this->config->shipping_rate['url'];
         $parameters = $this->getRequestParameters();
         try {
-            return $this->guzzleClient->request('POST', 'https://api.printful.com/shipping/rates', $parameters);
+            return $this->guzzleClient->request($method, $url, $parameters);
         } catch (\Exception $exception) {
             echo $exception->getMessage();
         }
@@ -68,8 +72,10 @@ class Shipping
 
     private function getCountyCodeByCountyName()
     {
+        $method = $this->config->country_request['method'];
+        $url = $this->config->country_request['url'];
         try {
-            $countries = $this->guzzleClient->request('GET', 'https://api.printful.com/countries');
+            $countries = $this->guzzleClient->request($method, $url);
 
             $countryCode = null;
             $stateCode = null;
